@@ -29,7 +29,7 @@ pub struct Entity {
 }
 
 impl Entity {
-    pub fn random() -> Self {
+    #[must_use] pub fn random() -> Self {
         Self {
             eye_color: rand::random(),
             skin_color: rand::random(),

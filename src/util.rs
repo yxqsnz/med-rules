@@ -1,6 +1,6 @@
 use crate::entity::{Entity, Gender};
 
-pub fn fm_stats(peps: &[Entity]) -> (usize, usize) {
+#[must_use] pub fn fm_stats(peps: &[Entity]) -> (usize, usize) {
     let mut fem_count = 0;
     let mut male_count = 0;
 
@@ -17,7 +17,7 @@ pub fn fm_stats(peps: &[Entity]) -> (usize, usize) {
     )
 }
 
-pub fn generate_base() -> Vec<Entity> {
+#[must_use] pub fn generate_base() -> Vec<Entity> {
     let mut peps = Vec::with_capacity(10);
 
     loop {

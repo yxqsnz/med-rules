@@ -20,7 +20,7 @@ fn main() {
             continue;
         } else {
             println!("{:#?}", sim.families);
-            println!("Found: {:#?}", found);
+            println!("Found: {found:#?}");
 
             break;
         }

@@ -19,16 +19,16 @@ pub struct Simulator {
     pub stage: Stage,
 }
 
-pub fn extract_two(f1: &[Entity], f2: &[Entity]) -> Option<(Vec<Entity>, Vec<Entity>)> {
-    let fem1 = f1.iter().find(|x| x.gender == Gender::Female)?.to_owned();
-    let fem2 = f2.iter().find(|x| x.gender == Gender::Female)?.to_owned();
-    let male1 = f1.iter().find(|x| x.gender == Gender::Male)?.to_owned();
-    let male2 = f2.iter().find(|x| x.gender == Gender::Male)?.to_owned();
+#[must_use] pub fn extract_two(f1: &[Entity], f2: &[Entity]) -> Option<(Vec<Entity>, Vec<Entity>)> {
+    let fem1 = f1.iter().find(|x| x.gender == Gender::Female)?.clone();
+    let fem2 = f2.iter().find(|x| x.gender == Gender::Female)?.clone();
+    let male1 = f1.iter().find(|x| x.gender == Gender::Male)?.clone();
+    let male2 = f2.iter().find(|x| x.gender == Gender::Male)?.clone();
 
     Some((vec![fem1, male2], vec![male1, fem2]))
 }
 
-pub fn merge_eyes(a: EyeColor, b: EyeColor) -> EyeColor {
+#[must_use] pub fn merge_eyes(a: EyeColor, b: EyeColor) -> EyeColor {
     use EyeColor::{Blue, Brown, Green, Hazel};
     let mut rng = thread_rng();
     // Brown (2P):
@@ -93,7 +93,7 @@ pub fn merge_eyes(a: EyeColor, b: EyeColor) -> EyeColor {
     }
 }
 
-pub fn merge_skin(a: SkinColor, b: SkinColor) -> SkinColor {
+#[must_use] pub fn merge_skin(a: SkinColor, b: SkinColor) -> SkinColor {
     use SkinColor::{Black, Dark, White};
 
     match (a, b) {
@@ -101,11 +101,11 @@ pub fn merge_skin(a: SkinColor, b: SkinColor) -> SkinColor {
         (White, White) => White,
         (Dark, Dark) => Dark,
         (Dark, White) | (White, Dark) => White,
-        (Dark, Black) | (Black, Dark) | (Black, Black) => Black,
+        (Dark | Black, Black) | (Black, Dark) => Black,
     }
 }
 
-pub fn merge_pep(a: &Entity, b: &Entity) -> Entity {
+#[must_use] pub fn merge_pep(a: &Entity, b: &Entity) -> Entity {
     Entity {
         eye_color: merge_eyes(a.eye_color, b.eye_color),
         skin_color: merge_skin(a.skin_color, b.skin_color),
@@ -114,7 +114,7 @@ pub fn merge_pep(a: &Entity, b: &Entity) -> Entity {
 }
 
 impl Simulator {
-    pub fn new(peoples: Vec<Entity>, recursion_limit: usize) -> Self {
+    #[must_use] pub fn new(peoples: Vec<Entity>, recursion_limit: usize) -> Self {
         Self {
             peoples,
             recursion_limit,
@@ -128,7 +128,7 @@ impl Simulator {
         let mut male = None;
         let search = self.peoples.clone();
 
-        for p in search.into_iter() {
+        for p in search {
             let mut remove_this = |p: &Entity| {
                 let position = self.peoples.iter().position(|x| x == p).unwrap();
                 self.peoples.remove(position);
@@ -204,7 +204,7 @@ impl Simulator {
 
             if !sim_a.families.is_empty() {
                 let de_a = &sim_a.families[0];
-                family_a.descedent = Some(Box::new(de_a.to_owned()));
+                family_a.descedent = Some(Box::new(de_a.clone()));
                 family_a.descedents_count += 1;
                 found += 1;
             }
@@ -212,7 +212,7 @@ impl Simulator {
             if !sim_b.families.is_empty() {
                 let de_b = &sim_b.families[0];
 
-                family_b.descedent = Some(Box::new(de_b.to_owned()));
+                family_b.descedent = Some(Box::new(de_b.clone()));
                 family_b.descedents_count += 1;
                 found += 1;
             }
