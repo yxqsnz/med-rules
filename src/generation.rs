@@ -1,6 +1,8 @@
+use serde::Serialize;
+
 use crate::entity::Entity;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Generation {
     pub mother: Entity,
     pub father: Entity,

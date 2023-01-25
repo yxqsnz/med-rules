@@ -1,17 +1,18 @@
 use rand::{thread_rng, Rng};
+use serde::Serialize;
 
 use crate::{
     entity::{Entity, EyeColor, Gender, SkinColor},
     generation::Generation,
 };
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub enum Stage {
     FindFamilies,
     BuildGenerations,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Simulator {
     pub peoples: Vec<Entity>,
     pub recursion_limit: usize,
@@ -19,7 +20,8 @@ pub struct Simulator {
     pub stage: Stage,
 }
 
-#[must_use] pub fn extract_two(f1: &[Entity], f2: &[Entity]) -> Option<(Vec<Entity>, Vec<Entity>)> {
+#[must_use]
+pub fn extract_two(f1: &[Entity], f2: &[Entity]) -> Option<(Vec<Entity>, Vec<Entity>)> {
     let fem1 = f1.iter().find(|x| x.gender == Gender::Female)?.clone();
     let fem2 = f2.iter().find(|x| x.gender == Gender::Female)?.clone();
     let male1 = f1.iter().find(|x| x.gender == Gender::Male)?.clone();
@@ -28,7 +30,8 @@ pub struct Simulator {
     Some((vec![fem1, male2], vec![male1, fem2]))
 }
 
-#[must_use] pub fn merge_eyes(a: EyeColor, b: EyeColor) -> EyeColor {
+#[must_use]
+pub fn merge_eyes(a: EyeColor, b: EyeColor) -> EyeColor {
     use EyeColor::{Blue, Brown, Green, Hazel};
     let mut rng = thread_rng();
     // Brown (2P):
@@ -93,7 +96,8 @@ pub struct Simulator {
     }
 }
 
-#[must_use] pub fn merge_skin(a: SkinColor, b: SkinColor) -> SkinColor {
+#[must_use]
+pub fn merge_skin(a: SkinColor, b: SkinColor) -> SkinColor {
     use SkinColor::{Black, Dark, White};
 
     match (a, b) {
@@ -105,7 +109,8 @@ pub struct Simulator {
     }
 }
 
-#[must_use] pub fn merge_pep(a: &Entity, b: &Entity) -> Entity {
+#[must_use]
+pub fn merge_pep(a: &Entity, b: &Entity) -> Entity {
     Entity {
         eye_color: merge_eyes(a.eye_color, b.eye_color),
         skin_color: merge_skin(a.skin_color, b.skin_color),
@@ -114,7 +119,8 @@ pub struct Simulator {
 }
 
 impl Simulator {
-    #[must_use] pub fn new(peoples: Vec<Entity>, recursion_limit: usize) -> Self {
+    #[must_use]
+    pub fn new(peoples: Vec<Entity>, recursion_limit: usize) -> Self {
         Self {
             peoples,
             recursion_limit,

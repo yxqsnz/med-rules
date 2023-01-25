@@ -1,6 +1,7 @@
 use rand::{distributions::Standard, prelude::Distribution, Rng};
+use serde::Serialize;
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Serialize)]
 pub enum EyeColor {
     Brown,
     Green,
@@ -8,20 +9,20 @@ pub enum EyeColor {
     Hazel,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Copy, Clone, PartialEq, Serialize)]
 pub enum SkinColor {
     Black,
     White,
     Dark,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub enum Gender {
     Male,
     Female,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub struct Entity {
     pub gender: Gender,
     pub eye_color: EyeColor,
@@ -29,7 +30,8 @@ pub struct Entity {
 }
 
 impl Entity {
-    #[must_use] pub fn random() -> Self {
+    #[must_use]
+    pub fn random() -> Self {
         Self {
             eye_color: rand::random(),
             skin_color: rand::random(),
