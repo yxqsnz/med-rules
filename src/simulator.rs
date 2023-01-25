@@ -170,7 +170,68 @@ impl Simulator {
         Some(())
     }
 
-    pub fn run_interaction(&mut self) -> Option<()> {
+    pub fn extract_generation(
+        family_a: &mut Generation,
+        family_b: &mut Generation,
+        recursion_limit: usize,
+    ) -> usize {
+        let mut found = 0;
+        if let Some((fa, fb)) =
+            extract_two(family_a.children.as_slice(), family_b.children.as_slice())
+        {
+            log::debug!("Targets: {:#?}/{:#?}", fa, fb);
+            let mut sim_a = Simulator::new(fa, 1);
+
+            while sim_a.find_familes().is_some() {
+                if sim_a.stage == Stage::BuildGenerations {
+                    break;
+                }
+            }
+
+            let mut sim_b = Simulator::new(fb, 1);
+
+            while sim_b.find_familes().is_some() {
+                if sim_b.stage == Stage::BuildGenerations {
+                    break;
+                }
+            }
+
+            log::debug!(
+                "Found (Len): {} {}",
+                sim_a.families.len(),
+                sim_b.families.len()
+            );
+
+            if !sim_a.families.is_empty() {
+                let de_a = &sim_a.families[0];
+                family_a.descedent = Some(Box::new(de_a.to_owned()));
+                family_a.descedents_count += 1;
+                found += 1;
+            }
+
+            if !sim_b.families.is_empty() {
+                let de_b = &sim_b.families[0];
+
+                family_b.descedent = Some(Box::new(de_b.to_owned()));
+                family_b.descedents_count += 1;
+                found += 1;
+            }
+
+            if family_a.descedents_count < 2 || family_b.descedents_count < 2 {
+                found += Self::extract_generation(
+                    family_a.descedent.as_mut().unwrap(),
+                    family_b.descedent.as_mut().unwrap(),
+                    recursion_limit,
+                );
+            }
+
+            log::debug!("Built descedents.")
+        }
+
+        found
+    }
+
+    pub fn run_interaction(&mut self, found_desc: &mut usize) -> Option<()> {
         match self.find_familes() {
             Some(()) => return Some(()),
             None => self.stage = Stage::BuildGenerations,
@@ -197,41 +258,8 @@ impl Simulator {
                     continue;
                 }
 
-                if let Some((fa, fb)) =
-                    extract_two(family_a.children.as_slice(), family_b.children.as_slice())
-                {
-                    println!("??? {:#?}/{:#?}", fa, fb);
-                    let mut sim_a = Simulator::new(fa, 1);
-
-                    while sim_a.run_interaction().is_some() {
-                        if sim_a.stage == Stage::BuildGenerations {
-                            break;
-                        }
-                    }
-
-                    let mut sim_b = Simulator::new(fb, 1);
-
-                    while sim_b.run_interaction().is_some() {
-                        if sim_b.stage == Stage::BuildGenerations {
-                            break;
-                        }
-                    }
-
-                    log::warn!("{} {}", sim_a.families.len(), sim_b.families.len());
-                    if !sim_a.families.is_empty() {
-                        let de_a = &sim_a.families[0];
-                        family_a.descedent = Some(Box::new(de_a.to_owned()));
-                    }
-
-                    if !sim_b.families.is_empty() {
-                        let de_b = &sim_b.families[0];
-
-                        family_b.descedent = Some(Box::new(de_b.to_owned()));
-                    }
-
-                    log::debug!("Built descedents.")
-                }
-
+                *found_desc +=
+                    Self::extract_generation(&mut family_a, &mut family_b, self.recursion_limit);
                 new_families.push(family_a);
                 new_families.push(family_b);
             }

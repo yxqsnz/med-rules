@@ -7,12 +7,22 @@ fn main() {
         .parse_default_env()
         .init();
 
-    let peps = generate_base();
-    let mut sim = Simulator::new(peps, 2);
+    loop {
+        let mut found = 0;
+        let peps = generate_base();
+        let mut sim = Simulator::new(peps, 2);
 
-    while sim.run_interaction().is_some() {
-        println!("{sim:#?}");
+        while sim.run_interaction(&mut found).is_some() {
+            // println!("{sim:#?}");
+        }
+
+        if found == 0 {
+            continue;
+        } else {
+            println!("{:#?}", sim.families);
+            println!("Found: {:#?}", found);
+
+            break;
+        }
     }
-
-    // println!("{:#?}", sim.families);
 }
