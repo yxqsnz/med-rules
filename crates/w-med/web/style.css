@@ -1,0 +1,30 @@
+:root {
+  font-family: "Inter", sans-serif;
+}
+
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: "Inter var", sans-serif;
+  }
+}
+
+* {
+  font-family: inherit;
+}
+
+.gen-header {
+  padding: 20px 20px 20px 20px;
+}
+
+.flx-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.gen-header p {
+  margin-left: 20px;
+}
+
+.ml {
+  margin-left: 20px;
+}
