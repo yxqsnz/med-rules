@@ -33,7 +33,7 @@ const generateClick = () => {
   const root = document.createElement("ul");
   render.appendChild(root);
 
-  for (const family of families) {
+  const applyGeneration = (base, family) => {
     const li = document.createElement("li");
     const parent = document.createElement("div");
     parent.className = "flx-row";
@@ -47,18 +47,37 @@ const generateClick = () => {
 
     li.appendChild(parent);
 
-    const childrenRoot = document.createElement("ul");
+    const children = document.createElement("ul");
+    const text = document.createElement("p");
+    text.textContent = "Filhos";
+    children.appendChild(text);
 
     for (const child of family.children) {
       const childElement = document.createElement("li");
 
       childElement.appendChild(renderPeople(child));
-      childrenRoot.appendChild(childElement);
+      children.appendChild(childElement);
     }
 
-    li.appendChild(childrenRoot);
+    const desc = document.createElement("ul");
+    desc.className = "ml";
 
-    root.appendChild(li);
+    if (family.descedent !== null) {
+      const text = document.createElement("p");
+      text.textContent = "=> Descedentes";
+      children.appendChild(text);
+
+      applyGeneration(desc, family.descedent);
+    }
+
+    li.appendChild(children);
+    li.appendChild(desc);
+
+    base.appendChild(li);
+  };
+
+  for (const family of families) {
+    applyGeneration(root, family);
   }
 };
 
