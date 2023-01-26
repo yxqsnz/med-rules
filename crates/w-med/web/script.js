@@ -8,7 +8,44 @@ const updateStatusText = (text) => {
 const renderPeople = (pep) => {
   const root = document.createElement("div");
   const p = document.createElement("p");
-  p.textContent = `${pep.gender} ${pep.eye_color} ${pep.skin_color}`;
+
+  if (pep.skin_color == "White" && pep.gender == "Male") {
+    p.textContent = `👨🏻‍🦳`;
+  }
+
+  if (pep.skin_color == "White" && pep.gender == "Female") {
+    p.textContent = `👩🏻‍🦳`;
+  }
+
+  if (pep.skin_color == "Black" && pep.gender == "Male") {
+    p.textContent = `👨🏿`;
+  }
+
+  if (pep.skin_color == "Black" && pep.gender == "Female") {
+    p.textContent = `👩🏿`;
+  }
+
+  if (pep.skin_color == "Dark" && pep.gender == "Male") {
+    p.textContent = `🧔🏿‍♂️`;
+  }
+
+  if (pep.skin_color == "Dark" && pep.gender == "Female") {
+    p.textContent = `👩🏿`;
+  }
+
+  switch (pep.eye_color) {
+    case "Brown":
+      p.textContent += ` 🟤`;
+      break;
+    case "Green":
+      p.textContent += ` 🟢`;
+      break;
+    case "Blue":
+      p.textContent += ` 🔵`;
+      break;
+    case "Hazel":
+      p.textContent += ` 👁️`;
+  }
 
   root.appendChild(p);
   return root;
